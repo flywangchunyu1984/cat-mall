@@ -354,11 +354,39 @@ spring.cloud.nacos.discovery.server-addr: localhost:8848 # 注册地址
 ```
 
 ```java
-// 主启动类
+// 主启动类nacos注解
 @EnableDiscoveryClient
 ```
+nacos server的url:127.0.0.1:8848
+nacos/nacos 登录
 
-### OpenFeign 作为服务通信组件
+使用版本：
+springboot：2.4.4
+springcloud：2020.0.2
+springcloudalibaba：2.2.1.RELEASE
+
+启动错误：
+No Feign Client for loadBalancing defined. Did you forget to include spring-cloud-starter-loadbalanc
+
+解决办法：common里加入下面依赖，成功启动
+	<dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+            <version>2.2.1.RELEASE</version>
+        </dependency>
+
+
+### OpenFeign 作为服务通信组件 声明式远程调用，http请求
 
 ```xml
 <dependency>
@@ -382,12 +410,14 @@ public interface CouponFeign {
 ### Nacos 作为配置中心
 
 ```xml
+1，引入依赖
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
 </dependency>
 ```
 
+2，配置中心设置
 ```properties
 # bootstrap.properties 启动优先级高于
 spring.application.name=mall-coupon
@@ -399,18 +429,109 @@ spring.cloud.nacos.config.server-addr=localhost:8848
 @RefreshScope
 ```
 
-在`nacos`配置中心添加配置文件 `servicename.properties`
+application.properties的 内容
+coupon.user.name=wangchunyu
+coupon.user.age=36
 
-- 命名空间、配置集、配置集ID、配置分组
+动态获取配置
+public class CouponController {
+    @Value("${coupon.user.name}")
+    private String name;
+    @Value("${coupon.user.age}")
+    private Integer age;
+    @RequestMapping("/test")
+    public R test(){
+        return R.ok().put("name",name).put("age",age);
+    }
+3，在配置中心中添加数据集，应用名.properties
+在`nacos`配置中心添加配置文件 `gulimall-coupon.properties`
+
+在Controller里追加注解，动态发布
+@RefreshScope
+public class CouponController
+
+如果读取配置失败，pom添加
+     <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+     </dependency>
+
+4，优先使用配置中心的配置。
+
+
+- 命名空间：配置隔离，默认新增的所有都在public空间
+  1，开发，测试，生产环境，利用命名空间来做环境隔离
+  	spring.cloud.nacos.config.namespace=a2b3c641-562a-44db-856a-0268365352c0
+  2，每一个微服务来建立命名空间	
+- 配置集；所有配置的集合
+- 配置集ID；类似文件名，应用名.properties
+- 配置分组:默认所有分组为DEFAULT_GROUP
+  1111,618,1212,dev,test,prop
+  	spring.cloud.nacos.config.group=1111
+
+3,同时加载多个配置集
+ 任何配置文件都可以放在配置中心，并且优先使用配置中心的配置
+ 
+
+bootstrap.properties里下面的配置
+
+spring.application.name=gulimall-coupon
+spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+spring.cloud.nacos.config.namespace=e2579108-10e5-44a2-9776-46f2b6429771
+spring.cloud.nacos.config.group=dev
+
+spring.cloud.nacos.config.extension-configs[0].data-id=datasource.yml
+spring.cloud.nacos.config.extension-configs[0].group=dev
+spring.cloud.nacos.config.extension-configs[0].refresh=true
+
+spring.cloud.nacos.config.extension-configs[1].data-id=mybatis.yml
+spring.cloud.nacos.config.extension-configs[1].group=dev
+spring.cloud.nacos.config.extension-configs[1].refresh=true
+
+spring.cloud.nacos.config.extension-configs[2].data-id=other.yml
+spring.cloud.nacos.config.extension-configs[2].group=dev
+spring.cloud.nacos.config.extension-configs[2].refresh=true
+
 
 ### Spring Cloud Gateway 作为网关
 
+各种网关的性能比较
+Spring Cloud Gateway  32213.38
+zuul	20800.13
+linked  28050.76
 ```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-starter-gateway</artifactId>
 </dependency>
 ```
+启动时database的错误，声明中exclude = {DataSourceAutoConfiguration.class}
+
+@EnableDiscoveryClient
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+public class GulimallGatewayApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(GulimallGatewayApplication.class, args);
+    }
+
+}
+
+application.yml的配置
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: test_route
+          uri: https://www.baidu.com
+          predicates:
+            - Query=url,baidu
+
+        - id: qq_route
+          uri: https://www.qq.com
+          predicates:
+            - Query=url,qq
+
 
 ## 业务功能
 
