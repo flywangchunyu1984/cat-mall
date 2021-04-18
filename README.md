@@ -552,7 +552,7 @@ webpack,gulp		maven,gradle
 依赖管理		      依赖管理
 npm			maven
 
-
+![image](https://user-images.githubusercontent.com/81153158/115147926-346d8d00-a098-11eb-9b70-7d6989724882.png)
 29、前端基础 ES6 let&const
 《ECMAScript 6 入门教程》是一本开源的 JavaScript 语言教程，全面介绍 ECMAScript 6 新引入的语法特性。
 因此，ECMAScript 和 JavaScript 的关系是，前者是后者的规格，后者是前者的一种实现（另外的 ECMAScript 方言还有 JScript 和 ActionScript）。日常场合，这两个词是可以互换的。
@@ -956,10 +956,44 @@ npm			maven
                 console.log("出现异常", err)
             })
     </script>
-
 </body>
-
 </html>
+
+35、前端基础 ES6 模块化
+hello.js
+export const util ={
+    sum(a,b){
+        return a + b;    
+    }  
+}
+
+// export {util}
+
+user.js
+var name = "jack"
+var age = 21
+function add(a,b){
+    return a+b;
+}
+
+export {name,age,add}
+
+import util from "./hello.js"
+import {name,age,add} from "./user.js"
+
+util.sum(1,2);
+console.log(name);
+add(1,3);
+
+36、前端基础 Vue 介绍&HelloWorld
+MVVM思想
+
+M：model 包括数据和一些基本操作
+V：view 视图，页面渲染结果
+VM：View-model，模型与视图间的双向操作（无需开发人员干涉）
+视图和数据通过VM绑定起来，model里有变化会自动地通过Directives填写到视view中，视图表单中添加了内容也会自动地通过DOM Listeners保存到模型中。
+
+
 
 
 
