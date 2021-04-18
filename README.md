@@ -502,7 +502,7 @@ linked  28050.76
 ```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-gateway</artifactId>
+<artifactId>spring-cloud-starter-gateway</artifactId>
 </dependency>
 ```
 启动时database的错误，声明中exclude = {DataSourceAutoConfiguration.class}
@@ -512,8 +512,7 @@ linked  28050.76
 public class GulimallGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GulimallGatewayApplication.class, args);
-    }
+        SpringApplication.run(GulimallGatewayApplication.class, args);    }
 
 }
 
@@ -531,6 +530,318 @@ spring:
           uri: https://www.qq.com
           predicates:
             - Query=url,qq
+
+##前端基础 技术栈简
+-vscode
+-ES6
+-Node.js
+-Vue
+-Babel
+-Webpack
+
+前端后端技术栈类比
+前端			后端
+javascript 		 java
+es6,7,8,9   		jdk8,9,10,11
+框架			框架	
+JQuery,Vue,React	spring,springMVC
+工具			工具
+webstorm,vscode  	idea,eclipse
+项目构建		      项目构建
+webpack,gulp		maven,gradle
+依赖管理		      依赖管理
+npm			maven
+
+
+29、前端基础 ES6 let&const
+《ECMAScript 6 入门教程》是一本开源的 JavaScript 语言教程，全面介绍 ECMAScript 6 新引入的语法特性。
+因此，ECMAScript 和 JavaScript 的关系是，前者是后者的规格，后者是前者的一种实现（另外的 ECMAScript 方言还有 JScript 和 ActionScript）。日常场合，这两个词是可以互换的。
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let a =123;
+        // let a = 10;
+        var b = 1;
+        console.log(a);
+        for (let i = 0; i < 10; i++) {
+            console.log(i);
+        }
+        // console.log(i);
+
+        // var 的情况
+        console.log(foo); // 输出undefined
+        var foo = 2;
+
+        // let 的情况
+        let bar = 2; 
+        console.log(bar); // 报错ReferenceError
+        const PI = 3.1415;
+        PI // 3.1415
+        // PI = 3;  
+        // TypeError: Assignment to constant variable.
+        const foo = {};
+
+        // 为 foo 添加一个属性，可以成功
+        foo.prop = 123;
+        foo.prop // 123
+
+        // 将 foo 指向另一个对象，就会报错
+        foo = {}; // TypeError: "foo" is read-only    
+    </script>   
+</body>
+</html>
+
+30、前端基础 ES6 解构&字符串
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let arr=[1,2,3];
+        let [a,b,c]=arr
+        console.log(a,b,c)
+
+        const Person = {
+        name: '张三',
+        //等同于birth: birth
+        age: 24,
+        language:['java','php','c++']
+        // 等同于hello: function ()...
+        // hello() { console.log('我的名字是', this.name); }
+        };
+        const {name:abc,age,language}=Person
+        console.log(abc,age,language)
+
+        let s = 'Hello world!';
+
+        // includes()：返回布尔值，表示是否找到了参数字符串。
+        // startsWith()：返回布尔值，表示参数字符串是否在原字符串的头部。
+        // endsWith()：返回布尔值，表示参数字符串是否在原字符串的尾部    
+        console.log(s.startsWith('Hello')) // true
+        console.log(s.endsWith('!')) // true
+        console.log(s.includes('o')) // true
+        
+        // 模板字符串
+        let ss = `
+            <ul>
+                <li>first</li>
+                <li>second</li>
+            </ul>`
+            console.log(ss)
+        //变量和表达式可以插入
+
+        function fun(){
+            return "这是一个函数"
+        }    
+        let info = `我是${abc},今年${age}了，我想说${fun()}`
+        console.log(info);
+    </script>
+</body>
+</html>
+
+31、前端基础 ES6 箭头函数
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        //函数参数的默认值
+        //ES6 之前，不能直接为函数的参数指定默认值，只能采用变通的方法。
+        // function log(x, y) {
+        // y = y || 'World';
+        // console.log(x, y);
+        // }
+
+        // console.log('Hello') // Hello World
+        // console.log('Hello', 'China') // Hello China
+        // console.log('Hello', '') // Hello World
+
+        //ES6 允许为函数的参数设置默认值，即直接写在参数定义的后面
+        function log(x, y = 'World') {
+            console.log(x, y);
+        }
+
+        console.log('Hello') // Hello World
+        console.log('Hello', 'China') // Hello China
+        console.log('Hello', '') // Hello
+
+        function Point(x = 0, y = 0) {
+            this.x = x;
+            this.y = y;
+        }
+
+        const p = new Point(2,5);
+        console.log(p) // { x: 2, y: 5 }
+        //2.不定参数
+        //ES6 引入 rest 参数（形式为...变量名），用于获取函数的多余参数，这样就不需要使用arguments对象了。
+        //rest 参数搭配的变量是一个数组，该变量将多余的参数放入数组中。
+        function add(...values) {
+            let sum = 0;
+            for (var val of values) {
+                sum += val;
+            }
+            return sum;
+        }
+
+        console.log(add(20, 50,1,2,3,4,5)) // 10
+        //3.箭头函数 ES6 允许使用“箭头”（=>）定义函数。
+        var f = v => v;
+        // 等同于
+        var f = function (v) {
+            return v;
+        };
+
+        var sum2 = (a,b)=> a+b;
+        console.log(sum2(10,20))    
+
+        var sum3 = (a,b)=> {
+            c=a+b
+            return a+c;
+        }
+        console.log(sum3(10,20))  
+
+        const Person = {
+        name: '张三',
+        //等同于birth: birth
+        age: 24,
+        language:['java','php','c++']
+        // 等同于hello: function ()...
+        // hello() { console.log('我的名字是', this.name); }
+        };
+        function hello(person){
+            console.log("hello" + person.name)  
+        }
+        //箭头表达式加解构函数
+        var hello2=({name})=>console.log("hello" + name)  
+        hello2(Person)
+
+    </script>
+</body>
+</html>	
+
+32、前端基础 ES6 对象优化
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const Person = {
+        name: '张三',
+        //等同于birth: birth
+        age: 24,
+        language:['java','php','c++']
+        // 等同于hello: function ()...
+        // hello() { console.log('我的名字是', this.name); }
+        };
+        console.log(Object.keys(Person))
+        console.log(Object.values(Person))
+        console.log(Object.entries(Person))
+        const target = {a:1}
+        const source1 = {b:2}
+        const source2 = {c:3}
+        Object.assign(target,source1,source2)
+        console.log(target)
+        //声明对象简写
+        const age=23
+        const name="zhangsan"
+        const person2 = {name,age}
+        console.log(person2)
+        let person3 ={
+            name: '张三',
+            eat: function(food){
+                console.log(this.name+"在吃"+food)
+            },
+            eat2:food=>console.log(person3.name+"在吃"+food),
+            eat3(food){
+                console.log(this.name+"在吃"+food)
+            }
+
+        }
+        person3.eat("apple")
+        person3.eat2("bnana")
+        person3.eat3("pean")
+        //对象拓展运算符
+        //1、拷贝对象，深拷贝
+        let obj = {name: '张三',age:16};
+        let someone = {...obj};
+        console.log(someone)
+
+        //2、合并对象
+        let age1 = {name: '张三',age:16};
+        let age2 = {name1: '李四',age2:23};
+        let a1 = {name1: 'wangwu',age2:30};
+        a1 = {...age1,...age2};
+        console.log(a1)
+
+    </script>
+</body>
+</html>
+
+33、前端基础 ES6 map、reduce
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //map() 接收一个函数，将原数组中的所有元素用这个函数处理后放入新数组返回
+         let arr =['1','-11', '15','3'];
+        // arr=arr.map((item)=>{
+        //     return item*2
+        // });
+        arr=arr.map(item=>item*2);
+        console.log(arr)
+        //reduce为数组中的每一个元素依次执行回调函数，不包括数组中被删除或从未被赋值的元素 
+        //array.reduce(function(total, currentValue, currentIndex, arr), initialValue)
+        //1.previousValue 上一次调用回调函数返回的值
+        //2.currentValue 数组中当前被处理的元素
+        //3.index 当前元素在数组中的索引
+        //4.array 调用reduce的数组
+        let res =arr.reduce((a,b)=>{
+            console.log("上一次处理后:"+a);
+            console.log("正在处理的:"+b);
+            return a+b
+        },100)
+        console.log(res)
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
 
 
 ## 业务功能
