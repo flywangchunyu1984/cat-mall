@@ -836,8 +836,129 @@ npm			maven
     </script>
 </body>
 </html>
+34、前端基础 ES6 promise异步编排
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+</head>
 
+<body>
+    <script>
+        // 1、查处当前用户信息
+        // 2、按照当前用户的id 查处他的课程
+        // 3、按照当前课程id查出得分
+        // $.ajax({
+        //     url: "mock/user.json",
+        //     success(data) {
+        //         console.log("查询用户:", data);
+        //         $.ajax({
+        //             url: `mock/user_corse_${data.id}.json`,
+        //             success(data) {
+        //                 console.log("查询到课程:", data);
+        //                 $.ajax({
+        //                     url: `mock/corse_score_${data.id}.json`,
+        //                     success(data) {
+        //                         console.log("查询到分数了:" + data);
+        //                     },
+        //                     error(error) {
+        //                         console.log("出现异常:" + error);
+        //                     }
+        //                 })
+        //             },
+        //             error(error) {
+        //                 console.log("出现异常:" + error);
+        //             }
+        //         })
+        //     },
+        //     error(error) {
+        //         console.log("出现异常:" + error);
+        //     }
+        // })
+
+        //1、Promise 可以封装异步操作
+        // let p = new Promise((resolve, reject) => {
+        //     // 1、异步操作
+        //     $.ajax({
+        //         url: "mock/user.json",
+        //         success: function (data) {
+        //             console.log("查询用户成功:", data);
+        //             resolve(data);
+        //         },
+        //         error: function (err) {
+        //             reject(err);
+        //         }
+        //     })
+        // })
+
+        // p.then((obj) => {
+        //     //1、Promise 可以封装异步操作
+        //     // 1、异步操作
+        //     new Promise((resolve, reject) => {
+        //         $.ajax({
+        //             url: `mock/user_corse_${obj.id}.json`,
+        //             success: function (data) {
+        //                 console.log("查询到课程成功:", data);
+        //                 resolve(data);
+        //             },
+        //             error: function (err) {
+        //                 reject(err);
+        //             }
+        //         })
+        //     }).then((data) => {
+        //         console.log("上一步的结果:", data);
+        //         $.ajax({
+        //             url: `mock/corse_score_${data.id}.json`,
+        //             success: function (data) {
+        //                 console.log("查询到分数了成功:" + data);
+        //             },
+        //             error: function (err) {
+        //             }
+        //         })
+        //     })
+        // })
+
+        //抽取一个公共的方法
+        function get(url, data) {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: url,
+                    data: data,
+                    success: function (data) {
+                        resolve(data);
+                    },
+                    error: function (err) {
+                        reject(err)
+                    }
+                })
+            });
+        }
+
+        // 测试
+        get("mock/user.json")
+            .then((data) => {
+                console.log("用户数据查询成功", data)
+                return get(`mock/user_corse_${data.id}.json`);
+            })
+            .then((data) => {
+                console.log("课程数据查询成功", data)
+                return get(`mock/corse_score_${data.id}.json`);
+            })
+            .then((data) => {
+                console.log("课程数据查询成功", data)
+            })
+            .catch((err) => {
+                console.log("出现异常", err)
+            })
+    </script>
+
+</body>
+
+</html>
 
 
 
