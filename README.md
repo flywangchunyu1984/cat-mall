@@ -993,6 +993,638 @@ V：view 视图，页面渲染结果
 VM：View-model，模型与视图间的双向操作（无需开发人员干涉）
 视图和数据通过VM绑定起来，model里有变化会自动地通过Directives填写到视view中，视图表单中添加了内容也会自动地通过DOM Listeners保存到模型中。
 
+教程：https://cn.vuejs.org/v2/guide/
+view     ViewModel  Model
+只要我们Model发生了改变，View上自然就会表现出来。
+当用户修改了View，Model中的数据也会跟着改变。
+把开发人员从琐的D0M操作中解放出来，那关注点放在如何操作Model上。
+
+安装：
+下载js并用 <script> 标签引入：<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+或者在VScode控制台使用npm install vue导入。步骤分为：
+1,先npm init -y初始化项目，生成了一个package.json文件，说明他是一个npm管理的项目
+类似于maven的pom.xml
+	
+2,npm install vue，安装后在项目node_modules里有vue
+
+3,
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+类似maven install拉取远程到本地
+npm install node-sass报错问题的．只要我们Model发生了改变，View上自然就会表现出来。
+当用户修改了View，Model中的数据也厶跟着改变。
+把开发人员从琐的D0M操作中解放出来，扌巴关/在如何操作Model上。解决：https://blog.csdn.net/hancoder/article/details/113821646
+
+node_modules目录的管理：
+
+因为要提交给git push等原因，并不想把node_modules也提交上传，文件太大。
+
+方式1是在.gitignore文件中指定不上传的文件夹
+
+方式2是npm install安装包的时候指定安装的目录。npm install --prefix path_to_node_modules放置的目录
+
+方式3是在package.json中指定export NODE_PATH='yourdir'/node_modules
+
+最终选择了方式1，别的方式不方便读者
+
+使用：
+
+new Vue
+在dom中{{name}}代表从模型中放到view中
+v-model实现双向绑定
+————————————————
+<body>
+    <div id="app">
+        <h1>{{name}},feichangshuai</h1>
+
+    </div>
+    <script src="./node_modules/vue/dist/vue.js"></script>
+    <script>
+        let vm = new Vue({
+            el: "#app",
+            data: {
+                name:"zhangsan"
+            }
+        });
+    </script>
+</body>
+
+
+37、前端基础 Vue 基本语法&插件安装
+
+在VSCode中安装vue 2 snippets语法提示插件，在谷歌浏览器中安装vue-devtool
+
+38、前端基础 Vue 指令 单向绑定&双向绑定
+1、v-text、v-html、v-ref
+这两个可以使用data数据。而<div>123{{}}</div>这种写法叫插值表达式，可以计算，可以取值，可以调用函数
+这里还介绍v-html v-text区别
+注意取的大多数不是请求域了，而是vue对象里的data
+
+插值闪烁：
+
+使用{{}}方式在网速较慢时会出现问题。在数据未加载完成时，页面会显示出原始的{{}}，
+加载完毕后才显示正确数据，我们称为插值闪烁。
+我们将网速调慢一些，然后刷新页面，试试看刚才的案例
+
+2、单向绑定v-bind:
+问题：花括号只能写在标签体内（<div 标签内> 标签体 </div>），不能用在标签内。
+
+插值表达式只能用在标签体里，如果我们这么用<a href="{{}}">是不起作用的，所以需要 <a v-bind:href="link">跳转</a>这种用法
+
+解决：用v-bind:，简写为:。表示把model绑定到view。可以设置src、title、class等
+
+在浏览器里vm.link="www.baidu.com"，此处vue数据改了，dom里跳转链接也改了
+
+class里有哪些内容可以通过vue数据的bool值添加删除，而在style中代表的是k:v值。
+
+也可以把v-bind:简写成:
+
+{{}}必须有返回值
+Vue.js 为 v-on 提供了事件修饰符来处理 DOM 事件细节，如：event.preventDefault() 或 event.stopPropagation()。
+
+Vue.js 通过由点 . 表示的指令后缀来调用修饰符。
+
+
+<!-- 同上 -->
+<input v-on:keyup.enter="submit">
+<!-- 缩写语法 -->
+<input @keyup.enter="submit">
+样式绑定v-bind:class
+class 与 style 是 HTML 元素的属性，用于设置元素的样式，我们可以用 v-bind 来设置样式属性。
+
+Vue.js v-bind 在处理 class 和 style 时， 专门增强了它。表达式的结果类型除了字符串之外，还可以是对象或数组。
+
+实例中将 isActive 设置为 true 显示了一个绿色的 div 块，如果设置为 false 则不显示：
+<div v-bind:class="{ 'active': isActive }"></div>
+
+
+text-danger 类背景颜色覆盖了 active 类的背景色：
+<div class="static"
+     v-bind:class="{ 'active' : isActive, 'text-danger' : hasError }">
+</div>
+
+下面使用一个属性代表了若干class
+
+<div id="app">
+    <div v-bind:class="classObject"></div>
+</div>
+
+new Vue({
+    el: '#app',
+    data: {
+        isActive: true,
+        error: {
+            value: true,
+            type: 'fatal'
+        }
+    },
+    computed: {
+        classObject: function () {
+            return {
+                base: true,
+                active: this.isActive && !this.error.value,
+                'text-danger': this.error.value && this.error.type === 'fatal',
+            }
+        }
+    }
+})
+————————————————
+3、双向绑定v-model
+v-bind只能从model到view。v-model能从view到model
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    <!-- 表单项，自定义组件 -->
+    <div id="app">
+
+        精通的语言：如果是多选框，那么会把每个value值赋值给vue数据<br>
+            <input type="checkbox" v-model="language" value="Java"> java<br/>
+            <input type="checkbox" v-model="language" value="PHP"> PHP<br/>
+            <input type="checkbox" v-model="language" value="Python"> Python<br/>
+        选中了 {{language.join(",")}}
+    </div>
+    
+    <script src="../node_modules/vue/dist/vue.js"></script>
+
+    <script>
+        let vm = new Vue({
+            el:"#app",
+            data:{
+                language: []
+            }
+        })
+    </script>
+</body>
+</html>
+
+4、v-on事件
+事件监听可以使用 v-on 指令
+
+v-on:事件类型="方法" ，可以简写成@事件类型="方法"
+
+事件冒泡：大小div都有单机事件，点了内部div相当于外部div也点击到了。
+
+如果不想点击内部div冒泡到外部div，可以使用.prevent阻止事件冒泡
+
+用法是v-on:事件类型.事件修饰符="方法"
+
+还可以绑定按键修饰符
+
+v-on:keyup.up=“num+=2” @keyup.down=“num-=2” @click.ctrl=“num=10”
+
+按键修饰符
+————————————————
+
+<!-- 事件修饰符 -->
+.stop - 阻止冒泡
+.prevent - 阻止默认事件
+.capture - 阻止捕获
+.self - 只监听触发该元素的事件
+.once - 只触发一次
+
+<!-- 按键修饰符： -->
+.left - 左键事件
+.right - 右键事件
+.middle - 中间滚轮事件
+.enter - 
+.tab - 
+.space - 
+.esc - 
+.up - 
+.down - 
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+5、v-for遍历
+可以遍历 数组[] 字典{} 。对于字典<li v-for="(value, key, index) in object">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div id="app">
+        <ul>
+            <!-- 4、遍历的时候都加上:key来区分不同数据，提高vue渲染效率 -->
+            <li v-for="(user,index) in users" :key="user.name" v-if="user.gender == '女'">
+                <!-- 1、显示user信息：v-for="item in items" -->
+               当前索引：{{index}} ==> {{user.name}}  ==>   
+                  {{user.gender}} ==>{{user.age}} <br>
+                <!-- 2、获取数组下标：v-for="(item,index) in items" -->
+                <!-- 3、遍历对象：
+                        v-for="value in object"
+                        v-for="(value,key) in object"
+                        v-for="(value,key,index) in object" 
+                -->
+                对象信息：
+                <span v-for="(v,k,i) in user">{{k}}=={{v}}=={{i}}；</span>
+                <!-- 4、遍历的时候都加上:key来区分不同数据，提高vue渲染效率 -->
+            </li>
+
+            
+        </ul>
+
+        <ul>
+            <li v-for="(num,index) in nums" :key="index"></li>
+        </ul>
+    </div>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <script>         
+        let app = new Vue({
+            el: "#app",
+            data: {
+                users: [
+                { name: '柳岩', gender: '女', age: 21 },
+                { name: '张三', gender: '男', age: 18 },
+                { name: '范冰冰', gender: '女', age: 24 },
+                { name: '刘亦菲', gender: '女', age: 18 },
+                { name: '古力娜扎', gender: '女', age: 25 }
+                ],
+                nums: [1,2,3,4,4]
+            },
+        })
+    </script>
+</body>
+
+</html>
+
+6、v-if和v-show
+在vue实例的data指定一个bool变量，然后v-show赋值即可。
+
+show里的字符串也可以比较
+
+if是根据表达式的真假，切换元素的显示和隐藏（操作dom元素）
+
+区别：show的标签F12一直都在，if的标签会移除，
+
+if操作dom树对性能消耗大
+————————————————
+7、v-else和v-else-if
+
+缩写@
+Vue.js 为两个最为常用的指令提供了特别的缩写：
+
+v-bind 缩写
+
+<!-- 完整语法 -->
+<a v-bind:href="url"></a>
+<!-- 缩写 -->
+<a :href="url"></a>
+1
+2
+3
+4
+v-on 缩写
+
+<!-- 完整语法 -->
+<a v-on:click="doSomething"></a>
+<!-- 缩写 -->
+<a @click="doSomething"></a>
+
+40、前端基础 Vue 计算属性和侦听器
+计算属性computed
+什么是计算属性：属性不是具体值，而是通过一个函数计算出来的，随时变化
+
+监听$watch
+监听属性 watch，我们可以通过 watch 来响应数据的变化。
+
+以下实例通过使用 watch 实现计数器：
+
+过滤器filter
+定义filter组件后，管道符后面跟具体过滤器{{user.gender | gFilter}}
+
+3、表单、复选框
+https://www.runoob.com/vue2/vue-forms.html
+
+1) 多选checkbox
+虽然v-model指定了同个值，但是会收集成数组。演示：https://www.runoob.com/try/try.php?filename=vue2-form2
+————————————————
+<body>
+    <div id="app">
+        <p>单个复选框：</p>
+        <input type="checkbox" id="checkbox" v-model="checked">
+        <label for="checkbox">{{ checked }}</label>
+
+        <p>多个复选框：</p>
+        <input type="checkbox" id="runoob" value="Runoob" v-model="checkedNames">
+        <label for="runoob">Runoob</label>
+        <input type="checkbox" id="google" value="Google" v-model="checkedNames">
+        <label for="google">Google</label>
+        <input type="checkbox" id="taobao" value="Taobao" v-model="checkedNames">
+        <label for="taobao">taobao</label>
+        <br>
+        <span>选择的值为: {{ checkedNames }}</span>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                checked : false,
+                checkedNames: []
+            }
+        })
+    </script>
+</body>
+————————————————
+
+2) 单选radio
+<div id="app">
+    <input type="radio" id="runoob" value="Runoob" v-model="picked">
+    <label for="runoob">Runoob</label>
+    <br>
+    <input type="radio" id="google" value="Google" v-model="picked">
+    <label for="google">Google</label>
+    <br>
+    <span>选中值为: {{ picked }}</span>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            picked : 'Runoob'
+        }
+    })
+</script>
+————————————————
+3) 下拉select
+<div id="app">
+    <select v-model="selected" name="fruit">
+        <option value="">选择一个网站</option>
+        <option value="www.runoob.com">Runoob</option>
+        <option value="www.google.com">Google</option>
+    </select>
+
+    <div id="output">
+        选择的网站是: {{selected}}
+    </div>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            selected: '' 
+        }
+    })
+</script>
+————————————————
+4) 修饰符
+.lazy
+
+在默认情况下， v-model 在 input 事件中同步输入框的值与数据，但你可以添加一个修饰符 lazy ，从而转变为在 change 事件中同步：
+
+<!-- 在 "change" 而不是 "input" 事件中更新 -->
+<input v-model.lazy="msg" >
+1
+2
+.number
+
+如果想自动将用户的输入值转为 Number 类型（如果原值的转换结果为 NaN 则返回原值），可以添加一个修饰符 number 给 v-model 来处理输入值：
+
+<input v-model.number="age" type="number">
+1
+这通常很有用，因为在 type=“number” 时 HTML 中输入的值也总是会返回字符串类型。
+
+.trim
+
+如果要自动过滤用户输入的首尾空格，可以添加 trim 修饰符到 v-model 上过滤输入：
+
+<input v-model.trim="msg">
+————————————————
+41、前端基础 Vue 组件化基础
+
+4、组件化
+在大型应用开发的时候，页面可以划分成很多部分。往往不同的页面，也会有相同的部分。例如可能会有相同的头部导航。
+
+但是如果每个页面都自开发，这无疑增加了我们开发的成本。所以我们会把页面的不同分拆分成立的组件，然后在不同页面就可以共享这些组件，避免重复开发。
+
+在vue里，所有的vue实例都是组件
+
+组件其实也是一个vue实例，因此它在定义时也会接收：data、methods、生命周期函数等
+不同的是组件不会与页面的元素绑定（所以不写el），否则就无法复用了，因此没有el属性。
+但是组件渲染需要html模板，所以增加了template属性，值就是HTML模板
+data必须是一个函数，不再是一个对象。
+全局组件定义完毕，任何vue实例都可以直接在HTML中通过组件名称来使用组件了
+下面的html内容是在说：
+
+<div id="app">这个块跟下面的new Vue对象绑定
+vue对象里指定了components属性，是指：标签里有子标签，'button-counter': buttonCounter代表有个组件叫buttonCounter，可以填充标签<button-counter>
+vue组件的使用
+参考：https://cn.vuejs.org/v2/guide/components.html
+
+https://www.runoob.com/vue2/vue-component.html
+
+1) 全局组件
+参考：https://cn.vuejs.org/v2/guide/components-registration.html
+————————————————
+// 定义一个名为 button-counter 的新组件
+Vue.component('button-counter', {
+  data: function () { // data是函数
+    return {
+      count: 0
+    }
+  },
+  template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>' // 渲染的模板
+})
+
+// 上面代表组件名为button-counter   
+会拿 <button v-on:click="count++">You clicked me {{ count }} times.</button> 替代
+
+全局注册的组件可以用在其被注册之后的任何 (通过 new Vue) 新创建的 Vue 根实例，也包括其组件树中的所有子组件的模板中。
+
+这里还应该注解的是data那个属性，在组件中需要以函数的方式写
+
+2) 局部组件
+注意：局部注册的组件在其子组件中不可用
+
+<div id="app">
+    <runoob></runoob>
+</div>
+
+<script>
+    
+    // 声明一个组件
+    // 这个东西可以在当前文件中写，也可以import
+    var Child = {
+        template: '<h1>自定义组件!</h1>'
+        // 不定义el
+        // 可以定义data函数
+    }
+
+    // 创建根实例(它是使用组件的)
+    new Vue({
+        el: '#app',
+        components: {
+            // <runoob> 将只在父模板可用  别的组件如果想使用其他局部组件，必须指定
+            'runoob': Child //局部组件在div中感应不到，所以要绑定一下，原来是就是说碰到runoob标签就替换为template内容
+        }
+    })
+</script>
+
+关于import和export可以看之前ES处的内容，但是在一个vue文件里导出，在另外vue组件里导入使用而已
+
+带default代表就是导出了，你可以接收时候可以自己命名别名。而不加default导出时，当前文件导入的时候得按原名来
+
+var ComponentA = { /* ... */ }
+
+var ComponentB = {
+  components: {
+    'component-a': ComponentA
+  },
+  // ...
+}
+
+或者如果你通过 Babel 和 webpack 使用 ES2015 模块，那么代码看起来更像：
+
+import ComponentA from './ComponentA.vue'
+
+export default {
+  components: {
+    ComponentA
+  },
+  // ...
+}
+
+注意在 ES2015+ 中，在对象中放一个类似 ComponentA 的变量名其实是 ComponentA: ComponentA 的缩写，即这个变量名同时是：
+
+用在模板中的自定义元素的名称
+包含了这个组件选项的变量名
+————————————————
+父子组件
+我自己倾向于说父标签是子组件，子标签是父组件，因为父标签的vue定义时有个template属性指定了模板，也就是继承了父组件(子标签)
+
+父子组件是什么：也没有个确定的答案https://www.zhihu.com/question/55892803
+父实例(也就是#app)里的红色部分为父组件，紫色部分为父组件模板
+
+注册的全局组件时，红色部分为子组件，紫色部分为子组件模板。
+
+在vue中，父子组件的关系可以总结为prop向下传递，事件向上传递。父组件通过prop给子组件下发数据，子组件通过事件给父组件发送信息。
+
+42、前端基础 Vue 生命周期和钩子函数
+5、生命周期钩子函数
+每个vue实例在被创建时都要经过一系列的初始化过程：创建实例，装载模板、渲染模板等等。vue为生命周期中的每个状态都设置了钩子函数（监听函）。每当vue实列处于不同的生命周期时，对应的函数就会被触发调用。
+![image](https://user-images.githubusercontent.com/81153158/115150293-acd94b80-a0a2-11eb-917e-261215bbc41c.png)
+
+
+
+
+43、前端基础 Vue 使用Vue脚手架进行模块化开发
+全局安装 webpack
+npm install webpack -g
+
+npm install -g @vue/cli-init
+
+快速创建vue-demo
+cmd> vue init webpack vue-demo
+
+四、vue项目
+观察renren-fast-vue，只有一个index.html，其他都是vue文件夹
+
+index.html
+static
+config
+src/APP.vue
+src/views/main.vue
+src/views/main-navbar.vue
+
+（这个是工具，与具体项目无关）
+
+# 安装webpack
+npm install webpack -g
+
+# 安装vue脚手架
+npm install -g @vue/cli-init
+
+# 在项目文件夹里执行
+# 初始化vue项目
+vue init webpack vue-demo
+
+
+# 运行，访问8080端口
+npm run dev 
+
+初始化vue项目：vue init webpack appTestName项目名
+我直接在IDEA的项目下（不用创建文件夹）执行vue init webpack vue-demo
+报错的话添加vue的环境变量：
+	npm config get prefix 找到npm
+	添加环境变量 C:\Users\HAN\AppData\Roaming\npm\node_modules@vue\cli-init\node_modules.bin
+一个劲回车，ESlint及后面的都选择no
+npm run dev 运行，访问8080端口
+————————————————
+vue项目目录结构：
+目录/文件	说明
+build	项目构建(webpack)相关代码
+config	配置目录，包括端口号等。我们初学可以使用默认的。
+node_modules	npm 加载的项目依赖模块
+src	这里是我们要开发的目录，基本上要做的事情都在这个目录里。里面包含了几个目录及文件：
+- assets: 放置一些图片，如logo等。
+- components: 目录里面放了一个组件文件，可以不用。
+- App.vue: 项目入口文件，我们也可以直接将组件写这里，而不使用 components 目录。
+- main.js: 项目的核心文件。
+static	静态资源目录，如图片、字体等。
+test	初始测试目录，可删除
+.xxxx文件	这些是一些配置文件，包括语法配置，git配置等。
+index.html	首页入口文件，你可以添加一些 meta 信息或统计代码啥的。
+package.json	项目配置文件。
+README.md	项目的说明文档，markdown 格式
+————————————————
+关系结构
+1) index.html
+index.html只有一个<div id="app">
+
+<script>document.write('<script src="./config/index.js?t=' + new Date().getTime() + '"><\/script>');</script>
+
+<body>
+  <div id="app"></div>
+</body>
+
+2) main.js
+main.js中import，并且new Vue
+
+import Vue from 'vue'
+import App from '@/App'
+import router from '@/router'                 // api: https://github.com/vuejs/vue-router
+import store from '@/store' 
+
+new Vue({
+  el: '#app', // index.html中的div
+  router,
+  store,
+  template: '<App/>',
+  components: { App }
+})
+
+在 Vue 构造器中有一个el 参数，它是 DOM 元素中的 id。
+这意味着我们接下来的改动全部在以上指定的 div 内，div 外部不受影响。
+
+3) App.vue
+<template>
+  <transition name="fade">
+    <router-view></router-view>
+  </transition>
+</template>
+
+<script>
+    // 导出vue实例。相当于合并了以前的new vue和export导出组件
+  export default {
+  }
+</script>
+
+其中的路由视图标签是根据url要决定访问的vue
+在main.js中提及了是使用的./router
 
 
 
